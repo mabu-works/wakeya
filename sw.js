@@ -1,4 +1,4 @@
-const CACHE_NAME = "wakeya-v1";
+const CACHE_NAME = "wakeya-v3";
 const CORE = [
   "./",
   "./index.html",

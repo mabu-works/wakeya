@@ -5,14 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>わけや｜グループ分けツール</title>
 <meta name="description" content="参加者全員をランダムにグループ分けするツール。グループ数指定・1グループの人数指定の両対応、人数差は最大1人まで。">
-<meta name="theme-color" content="#0f766e">
+<meta name="theme-color" content="#0a0f1c">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<script>
+try {
+  var savedTheme = localStorage.getItem("wakeya-theme");
+  if (savedTheme === "light" || savedTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }
+} catch (e) { /* テーマ保存が使えない環境ではダークを既定にする */ }
+</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="site-header">
+<nav class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#top">わけや</a>
+    <span class="topbar-links">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">🌙</button>
+    </span>
+  </div>
+</nav>
+
+<header class="site-header" id="top">
+  <p class="eyebrow">GROUP SPLITTER</p>
   <h1>わけや</h1>
   <p class="tagline">グループ分けツール</p>
 </header>
