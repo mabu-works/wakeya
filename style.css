@@ -306,3 +306,40 @@ textarea:focus-visible, input:focus-visible, button:focus-visible, a:focus-visib
   html { scroll-behavior: auto; }
   .btn { transition: none; }
 }
+
+/* 印刷時は入力UIを隠し、グループ分け結果（グループ表）だけを紙面に出す */
+@media print {
+  .topbar,
+  .site-header,
+  .site-footer,
+  .shuffle-display,
+  .actions,
+  .mode-controls,
+  .split-controls { display: none !important; }
+  main > .card:not(.split-card) { display: none !important; }
+  .split-card > h2,
+  .split-card > .note,
+  #splitMsg,
+  #copyMsg { display: none !important; }
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+  main { max-width: none; padding: 0; }
+  .card {
+    background: #ffffff;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+  .result-area { margin-bottom: 0; }
+  .group-grid { gap: 10px; }
+  .group-card {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .group-card h3 { color: #000000; }
+}

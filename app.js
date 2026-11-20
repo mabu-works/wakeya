@@ -22,18 +22,59 @@ const resultArea = $("resultArea");
 const splitBtn = $("splitBtn");
 const reshuffleBtn = $("reshuffleBtn");
 const copyResultBtn = $("copyResultBtn");
+const printBtn = $("printBtn");
 const splitMsg = $("splitMsg");
 const copyMsg = $("copyMsg");
 
+// ===== リスト保存（localStorage） =====
+// テーマキー wakeya-theme とは別に、入力と主要設定だけを wakeya-data に保存する
+const STORAGE_KEY = "wakeya-data";
+
+function saveData() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      participants: participantsArea.value,
+      mode: currentMode(),
+      groupCount: groupCountInput.value,
+      groupSize: groupSizeInput.value,
+    }));
+  } catch (e) { /* 保存できない環境でも入力・分け自体は使える */ }
+}
+
+function clearSavedData() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* 削除できなくてもクリア自体は有効 */ }
+}
+
+function restoreData() {
+  let raw = null;
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { return; }
+  if (!raw) return;
+  let data = null;
+  try { data = JSON.parse(raw); } catch (e) { return; }
+  if (!data || typeof data !== "object") return;
+  if (typeof data.participants === "string") {
+    participantsArea.value = data.participants;
+  }
+  if (data.mode === "groups" || data.mode === "size") {
+    document.querySelectorAll('input[name="splitMode"]').forEach((radio) => {
+      radio.checked = radio.value === data.mode;
+    });
+  }
+  if (data.groupCount !== undefined && data.groupCount !== null && String(data.groupCount) !== "") {
+    groupCountInput.value = String(data.groupCount);
+  }
+  if (data.groupSize !== undefined && data.groupSize !== null && String(data.groupSize) !== "") {
+    groupSizeInput.value = String(data.groupSize);
+  }
+}
+
 // ===== 参加者リスト =====
-// 空行は無視し、同名の重複行は1人として扱う（初出の順序を保持）
+// 空行は無視する。同名でも別々の人として扱う（名簿の同姓同名対応のため重複を保持し、入力順を保つ）
 function parseParticipants() {
-  const seen = new Set();
   const result = [];
   participantsArea.value.split(/\r?\n/).forEach((line) => {
     const name = line.trim();
-    if (name === "" || seen.has(name)) return;
-    seen.add(name);
+    if (name === "") return;
     result.push(name);
   });
   return result;
@@ -44,9 +85,15 @@ function updateCount() {
 }
 
 participantsArea.addEventListener("input", updateCount);
+participantsArea.addEventListener("input", saveData);
+groupCountInput.addEventListener("input", saveData);
+groupCountInput.addEventListener("change", saveData);
+groupSizeInput.addEventListener("input", saveData);
+groupSizeInput.addEventListener("change", saveData);
 
 $("clearBtn").addEventListener("click", () => {
   participantsArea.value = "";
+  clearSavedData();
   updateCount();
   participantsArea.focus();
 });
@@ -54,6 +101,7 @@ $("clearBtn").addEventListener("click", () => {
 $("sampleBtn").addEventListener("click", () => {
   participantsArea.value = SAMPLE.join("\n");
   updateCount();
+  saveData();
 });
 
 // ===== 分け方のモード =====
@@ -70,6 +118,7 @@ function syncModeControls() {
 
 document.querySelectorAll('input[name="splitMode"]').forEach((radio) => {
   radio.addEventListener("change", syncModeControls);
+  radio.addEventListener("change", saveData);
 });
 
 // ===== グループ分け =====
@@ -192,6 +241,7 @@ function updateButtons() {
   splitBtn.disabled = splitting;
   reshuffleBtn.disabled = splitting || lastGroups.length === 0;
   copyResultBtn.disabled = splitting || lastGroups.length === 0;
+  if (printBtn) printBtn.disabled = splitting || lastGroups.length === 0;
 }
 
 splitBtn.addEventListener("click", split);
@@ -216,6 +266,17 @@ copyResultBtn.addEventListener("click", async () => {
     copyMsg.textContent = text;
   }
 });
+
+// ===== 結果の印刷 =====
+// 印刷用CSS（@media print）で入力UIを隠し、グループ表だけを出す
+if (printBtn) {
+  printBtn.addEventListener("click", () => {
+    if (lastGroups.length === 0) return;
+    if (typeof window !== "undefined" && window && typeof window.print === "function") {
+      window.print();
+    }
+  });
+}
 
 // ===== テーマ切り替え（sabasute と同じ initTheme パターン） =====
 (function initTheme() {
@@ -242,6 +303,7 @@ copyResultBtn.addEventListener("click", async () => {
 })();
 
 // ===== 初期化 =====
+restoreData();
 updateCount();
 syncModeControls();
 updateButtons();
