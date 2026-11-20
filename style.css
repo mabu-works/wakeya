@@ -1,0 +1,225 @@
+:root {
+  --bg: #f0fdfa;
+  --card: #ffffff;
+  --text: #132a27;
+  --muted: #5f7a75;
+  --border: #c4e3dc;
+  --primary: #0f766e;
+  --primary-text: #ffffff;
+  --sub-bg: #e0f2ee;
+  --sub-text: #134e4a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c1a18;
+    --card: #162622;
+    --text: #e0f2ee;
+    --muted: #93b3ac;
+    --border: #2a4741;
+    --primary: #14b8a6;
+    --sub-bg: #1d3531;
+    --sub-text: #c4e3dc;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+    "Yu Gothic UI", "Yu Gothic", Meiryo, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.site-header {
+  text-align: center;
+  padding: 1.4rem 1rem 0.4rem;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+}
+
+.tagline {
+  margin: 0.1rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.card h2 {
+  margin: 0 0 0.7rem;
+  font-size: 1.05rem;
+}
+
+.card p { margin: 0 0 0.6rem; }
+.card p:last-child { margin-bottom: 0; }
+
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.mode-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.mode-option {
+  flex: 1 1 12rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  padding: 0.55rem 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.split-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+
+.split-controls label { font-weight: 700; }
+
+.split-controls input[type="number"] {
+  width: 5.5rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.note-inline { color: var(--muted); }
+
+.shuffle-display {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  min-height: 2.6rem;
+  margin: 0.4rem 0 0.6rem;
+  color: var(--primary);
+  word-break: break-all;
+}
+
+.shuffle-display.is-shuffling { opacity: 0.85; }
+
+.result-area { margin-bottom: 0.6rem; }
+
+.result-area:empty { display: none; }
+
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+
+.group-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sub-bg);
+  color: var(--sub-text);
+  padding: 0.6rem 0.8rem;
+}
+
+.group-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  color: var(--primary);
+}
+
+.group-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.group-card li {
+  font-weight: 700;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.actions .btn { flex: 1 1 8rem; }
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background: var(--sub-bg);
+  color: var(--sub-text);
+}
+
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-text);
+  border-color: transparent;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0.75rem 1rem;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin: 0.3rem 0 0;
+  min-height: 1.1em;
+}
+
+.site-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem 1.6rem;
+}

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: JavaScript syntax check (node --check)
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            if ! node --check "$f"; then
+              echo "::error file=$f::node --check failed"
+              fail=1
+            fi
+          done < <(find . -name '*.js' -not -path './.git/*' -not -path './node_modules/*' -type f)
+          exit $fail
+      - name: JSON validation
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$f"; then
+              echo "::error file=$f::invalid JSON"
+              fail=1
+            fi
+          done < <(find . -name '*.json' -not -path './.git/*' -not -path './node_modules/*' -type f)
+          exit $fail
+      - name: index.html exists
+        run: |
+          if ! find . -name 'index.html' -not -path './.git/*' -not -path './node_modules/*' -type f | grep -q .; then
+            echo "::error::index.html not found"
+            exit 1
+          fi

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>わけや｜グループ分けツール</title>
+<meta name="description" content="参加者全員をランダムにグループ分けするツール。グループ数指定・1グループの人数指定の両対応、人数差は最大1人まで。">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <h1>わけや</h1>
+  <p class="tagline">グループ分けツール</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>参加者（<span id="participantCount">0</span>人）</h2>
+    <textarea id="participantsArea" rows="10" placeholder="1行に1人ずつ入力してください（貼り付け対応）&#10;例：&#10;田中&#10;佐藤&#10;鈴木"></textarea>
+    <p class="note">空行は無視されます。同名の重複行は1人として扱います。</p>
+    <div class="actions">
+      <button id="clearBtn" class="btn btn-sub" type="button">リストをクリア</button>
+      <button id="sampleBtn" class="btn btn-sub" type="button">サンプルを入れる</button>
+    </div>
+  </section>
+
+  <section class="card split-card">
+    <h2>分け方</h2>
+    <div class="mode-controls" role="radiogroup" aria-label="分け方の指定方法">
+      <label class="mode-option">
+        <input type="radio" name="splitMode" value="groups" checked>
+        グループ数で指定
+      </label>
+      <label class="mode-option">
+        <input type="radio" name="splitMode" value="size">
+        1グループの人数で指定
+      </label>
+    </div>
+    <div class="split-controls" id="groupsControl">
+      <label for="groupCount">グループ数</label>
+      <input id="groupCount" type="number" min="1" step="1" value="2">
+      <span class="note-inline">グループ</span>
+    </div>
+    <div class="split-controls" id="sizeControl" hidden>
+      <label for="groupSize">1グループの人数</label>
+      <input id="groupSize" type="number" min="1" step="1" value="3">
+      <span class="note-inline">人</span>
+    </div>
+    <p class="note">どのグループも人数の差が最大で1人になるよう、できるだけ均等に分けます。</p>
+    <div id="shuffleDisplay" class="shuffle-display" aria-live="polite">参加者を入れて「グループ分けする」を押してね</div>
+    <div id="resultArea" class="result-area" aria-live="polite"></div>
+    <div class="actions">
+      <button id="splitBtn" class="btn btn-primary" type="button">グループ分けする</button>
+      <button id="reshuffleBtn" class="btn btn-sub" type="button" disabled>再シャッフル</button>
+      <button id="copyResultBtn" class="btn btn-sub" type="button" disabled>結果をコピー</button>
+    </div>
+    <p id="splitMsg" class="note" aria-live="polite"></p>
+    <p id="copyMsg" class="note" aria-live="polite"></p>
+  </section>
+
+  <section class="card">
+    <h2>くじやとの違い</h2>
+    <p>「くじや」は、参加者リストから<strong>当選者を選ぶ「抽選」</strong>向けのツールです。プレゼント企画の当選者決めのように、一部の人だけを選びたいときに使います。</p>
+    <p>一方、「わけや」は<strong>参加者全員をグループに分ける</strong>ためのツールです。チーム分けや班分け、席替えのグループ決めのように、全員を漏れなく分けたいときに使います。選ばれない人は出ません。</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>わけや — 入力内容はブラウザ内でのみ処理されます</p>
+</footer>
+
+<script src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
