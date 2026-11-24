@@ -1,5 +1,9 @@
 # 更新履歴
 
+## 2026-11-24
+
+- Windows 版（.NET 8 / WinForms）を `windows/` に追加（均等分けのルール・シャッフル演出は Web 版と同じ）。ビルドは `windows/build.bat` / `windows/build.sh`、成果物は `windows/dist/Wakeya.exe`。
+
 ## 2026-11-20
 
 学校のクラス40〜50人での実用に向けた改修。
