@@ -1,15 +1,21 @@
 "use strict";
 
-// ===== 定数 =====
+// ==========================================
+// 📌 定数
+// ==========================================
 const SHUFFLE_DURATION = 1200; // シャッフル演出の時間（ミリ秒）
 const SHUFFLE_INTERVAL = 50; // 名前が切り替わる間隔（ミリ秒）
 const SAMPLE = ["田中", "佐藤", "鈴木", "高橋", "伊藤", "渡辺", "山本", "中村", "小林", "加藤", "吉田", "山田"];
 
-// ===== 状態 =====
+// ==========================================
+// 📊 状態
+// ==========================================
 let splitting = false;
 let lastGroups = []; // 直近の結果（グループの配列）
 
-// ===== DOM =====
+// ==========================================
+// 🖥️ DOM
+// ==========================================
 const $ = (id) => document.getElementById(id);
 const participantsArea = $("participantsArea");
 const participantCount = $("participantCount");
@@ -26,10 +32,13 @@ const printBtn = $("printBtn");
 const splitMsg = $("splitMsg");
 const copyMsg = $("copyMsg");
 
-// ===== リスト保存（localStorage） =====
-// テーマキー wakeya-theme とは別に、入力と主要設定だけを wakeya-data に保存する
+// ==========================================
+// 💾 リスト保存（localStorage）
+// ==========================================
+// 🌙 テーマキー wakeya-theme とは別に、入力と主要設定だけを wakeya-data に保存する
 const STORAGE_KEY = "wakeya-data";
 
+// 💾 入力と主要設定を保存する（localStorage）
 function saveData() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -41,10 +50,12 @@ function saveData() {
   } catch (e) { /* 保存できない環境でも入力・分け自体は使える */ }
 }
 
+// 🗑️ 保存した入力と設定を消す
 function clearSavedData() {
   try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* 削除できなくてもクリア自体は有効 */ }
 }
 
+// 📥 保存した入力と設定を復元する
 function restoreData() {
   let raw = null;
   try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { return; }
@@ -68,8 +79,10 @@ function restoreData() {
   }
 }
 
-// ===== 参加者リスト =====
-// 空行は無視する。同名でも別々の人として扱う（名簿の同姓同名対応のため重複を保持し、入力順を保つ）
+// ==========================================
+// 👥 参加者リスト
+// ==========================================
+// ⌨️ 空行は無視する。同名でも別々の人として扱う（名簿の同姓同名対応のため重複を保持し、入力順を保つ）
 function parseParticipants() {
   const result = [];
   participantsArea.value.split(/\r?\n/).forEach((line) => {
@@ -80,6 +93,7 @@ function parseParticipants() {
   return result;
 }
 
+// 🔢 参加者数を表示する
 function updateCount() {
   participantCount.textContent = String(parseParticipants().length);
 }
@@ -104,12 +118,15 @@ $("sampleBtn").addEventListener("click", () => {
   saveData();
 });
 
-// ===== 分け方のモード =====
+// ==========================================
+// ⚙️ 分け方のモード
+// ==========================================
 function currentMode() {
   const checked = document.querySelector('input[name="splitMode"]:checked');
   return checked ? checked.value : "groups";
 }
 
+// ⚙️ 分け方モードに合わせて入力欄を切り替える
 function syncModeControls() {
   const mode = currentMode();
   groupsControl.hidden = mode !== "groups";
@@ -121,7 +138,9 @@ document.querySelectorAll('input[name="splitMode"]').forEach((radio) => {
   radio.addEventListener("change", saveData);
 });
 
-// ===== グループ分け =====
+// ==========================================
+// 👥 グループ分け
+// ==========================================
 function shuffle(list) {
   const arr = list.slice();
   for (let i = arr.length - 1; i > 0; i--) {
@@ -133,7 +152,7 @@ function shuffle(list) {
   return arr;
 }
 
-// グループ数 groupCount に対して、人数差が最大1になるよう均等に分ける
+// 👥 グループ数 groupCount に対して、人数差が最大1になるよう均等に分ける
 function splitIntoGroups(participants, groupCount) {
   const shuffled = shuffle(participants);
   const base = Math.floor(shuffled.length / groupCount);
@@ -148,7 +167,7 @@ function splitIntoGroups(participants, groupCount) {
   return groups;
 }
 
-// 設定を検証し、問題なければ {groupCount} を、問題があれば {error} を返す
+// ⚙️ 設定を検証し、問題なければ {groupCount} を、問題があれば {error} を返す
 function resolveGroupCount(participants) {
   if (participants.length === 0) {
     return { error: "参加者を1人以上入れてください。" };
@@ -176,6 +195,7 @@ function resolveGroupCount(participants) {
   return { groupCount: Math.ceil(participants.length / size) };
 }
 
+// 🎲 グループ分けを開始する（設定を検証してから）
 function split() {
   if (splitting) return;
   const participants = parseParticipants();
@@ -188,6 +208,7 @@ function split() {
   animateAndFinish(participants, groups);
 }
 
+// 🎰 シャッフル演出をしてから結果を表示する
 function animateAndFinish(pool, groups) {
   splitting = true;
   updateButtons();
@@ -211,6 +232,7 @@ function animateAndFinish(pool, groups) {
   }, SHUFFLE_INTERVAL);
 }
 
+// 📊 グループ分け結果を表示する
 function finishSplit(groups) {
   lastGroups = groups.map((g) => g.slice());
   shuffleDisplay.textContent = "🎉 グループ分け完了（" + groups.length + "グループ）";
@@ -237,6 +259,7 @@ function finishSplit(groups) {
   updateButtons();
 }
 
+// 🔘 ボタンの有効・無効を切り替える
 function updateButtons() {
   splitBtn.disabled = splitting;
   reshuffleBtn.disabled = splitting || lastGroups.length === 0;
@@ -247,7 +270,9 @@ function updateButtons() {
 splitBtn.addEventListener("click", split);
 reshuffleBtn.addEventListener("click", split);
 
-// ===== 結果コピー =====
+// ==========================================
+// 📊 結果コピー
+// ==========================================
 function resultText() {
   const lines = ["わけや グループ分け結果"];
   lastGroups.forEach((members, i) => {
@@ -267,8 +292,10 @@ copyResultBtn.addEventListener("click", async () => {
   }
 });
 
-// ===== 結果の印刷 =====
-// 印刷用CSS（@media print）で入力UIを隠し、グループ表だけを出す
+// ==========================================
+// 📊 結果の印刷
+// ==========================================
+// 👥 印刷用CSS（@media print）で入力UIを隠し、グループ表だけを出す
 if (printBtn) {
   printBtn.addEventListener("click", () => {
     if (lastGroups.length === 0) return;
@@ -278,7 +305,9 @@ if (printBtn) {
   });
 }
 
-// ===== テーマ切り替え（sabasute と同じ initTheme パターン） =====
+// ==========================================
+// 🌙 テーマ切り替え（sabasute と同じ initTheme パターン）
+// ==========================================
 (function initTheme() {
   var root = document.documentElement;
   if (!root || !root.getAttribute || !root.setAttribute) return;
@@ -302,7 +331,9 @@ if (printBtn) {
   }
 })();
 
-// ===== 初期化 =====
+// ==========================================
+// 🚀 初期化
+// ==========================================
 restoreData();
 updateCount();
 syncModeControls();

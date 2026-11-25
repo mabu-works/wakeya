@@ -1,3 +1,4 @@
+// 📦 わけや service worker：殻をキャッシュしてオフライン対応にする
 const CACHE_NAME = "wakeya-v3";
 const CORE = [
   "./",

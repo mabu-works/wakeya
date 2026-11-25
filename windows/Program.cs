@@ -9,6 +9,7 @@ namespace Wakeya
     internal static class Program
     {
         [STAThread]
+        // 🚀 アプリの入口
         private static void Main()
         {
             ApplicationConfiguration.Initialize();
@@ -18,7 +19,7 @@ namespace Wakeya
 
     internal sealed class MainForm : Form
     {
-        // Web版（wakeya）と同じ定数・仕様
+        // 📌 Web版（wakeya）と同じ定数・仕様
         private const int ShuffleDuration = 1200; // シャッフル演出の時間（ミリ秒）
         private const int ShuffleInterval = 50; // 名前が切り替わる間隔（ミリ秒）
         private static readonly string[] Sample =
@@ -57,6 +58,7 @@ namespace Wakeya
         private List<string> animPool = new List<string>();
         private List<List<string>> animGroups = new List<List<string>>();
 
+        // 🖥️ メインフォームを構築する
         public MainForm()
         {
             Text = "わけや for Windows｜グループ分け";
@@ -253,6 +255,7 @@ namespace Wakeya
             SyncModeControls();
         }
 
+        // 🔘 小さなボタンを作る
         private Button MakeSubButton(string text, int x, int y, int w)
         {
             return new Button
@@ -266,8 +269,10 @@ namespace Wakeya
             };
         }
 
+        // ⚙️ 現在の分け方モードを返す
         private string CurrentMode() => modeSize.Checked ? "size" : "groups";
 
+        // ⚙️ 分け方モードに合わせて入力欄を切り替える
         private void SyncModeControls()
         {
             bool groups = CurrentMode() == "groups";
@@ -277,7 +282,7 @@ namespace Wakeya
             groupSizeNum.Visible = !groups;
         }
 
-        // 空行は無視する。同名でも別々の人として扱う（Web版 parseParticipants と同じ）
+        // 📝 空行は無視する。同名でも別々の人として扱う（Web版 parseParticipants と同じ）
         private List<string> ParseParticipants()
         {
             var result = new List<string>();
@@ -290,11 +295,13 @@ namespace Wakeya
             return result;
         }
 
+        // 🔢 参加者数を表示する
         private void UpdateCount()
         {
             countLabel.Text = ParseParticipants().Count + "人";
         }
 
+        // 🔀 リストをシャッフルして返す
         private List<string> Shuffled(List<string> list)
         {
             var arr = list.ToArray();
@@ -306,7 +313,7 @@ namespace Wakeya
             return new List<string>(arr);
         }
 
-        // グループ数に対して、人数差が最大1になるよう均等に分ける（Web版 splitIntoGroups と同じ）
+        // 👥 グループ数に対して、人数差が最大1になるよう均等に分ける（Web版 splitIntoGroups と同じ）
         private List<List<string>> SplitIntoGroups(List<string> participants, int groupCount)
         {
             var shuffled = Shuffled(participants);
@@ -323,7 +330,7 @@ namespace Wakeya
             return groups;
         }
 
-        // 設定を検証し、問題なければ groupCount を、問題があれば error を返す（Web版 resolveGroupCount と同じ）
+        // ⚙️ 設定を検証し、問題なければ groupCount を、問題があれば error を返す（Web版 resolveGroupCount と同じ）
         private (int groupCount, string error) ResolveGroupCount(List<string> participants)
         {
             if (participants.Count == 0) return (0, "参加者を1人以上入れてください。");
@@ -347,6 +354,7 @@ namespace Wakeya
             return ((int)Math.Ceiling(participants.Count / (double)size), "");
         }
 
+        // 🎲 グループ分けを開始する
         private void Split()
         {
             if (splitting) return;
@@ -359,7 +367,7 @@ namespace Wakeya
             }
             var groups = SplitIntoGroups(participants, groupCount);
 
-            // シャッフル演出（Web版 animateAndFinish と同じ 1200ms / 50ms）
+            // 🔀 シャッフル演出（Web版 animateAndFinish と同じ 1200ms / 50ms）
             splitting = true;
             UpdateButtons();
             splitMsg.Text = "";
@@ -370,6 +378,7 @@ namespace Wakeya
             shuffleTimer.Start();
         }
 
+        // 🎰 シャッフル演出の1コマを進める
         private void ShuffleTick(object? sender, EventArgs e)
         {
             if (shuffleWatch.ElapsedMilliseconds >= ShuffleDuration)
@@ -383,6 +392,7 @@ namespace Wakeya
             shuffleDisplay.Text = animPool[random.Next(animPool.Count)];
         }
 
+        // 📊 グループ分け結果を表示する
         private void FinishSplit(List<List<string>> groups)
         {
             lastGroups = groups.ConvertAll(g => new List<string>(g));
@@ -422,6 +432,7 @@ namespace Wakeya
             UpdateButtons();
         }
 
+        // 🔘 ボタンの有効・無効を切り替える
         private void UpdateButtons()
         {
             splitBtn.Enabled = !splitting;
@@ -429,7 +440,7 @@ namespace Wakeya
             copyBtn.Enabled = !splitting && lastGroups.Count > 0;
         }
 
-        // 結果テキスト（Web版 resultText と同じ形式）
+        // 📊 結果テキスト（Web版 resultText と同じ形式）
         private string ResultText()
         {
             var lines = new List<string> { "わけや グループ分け結果" };
@@ -440,6 +451,7 @@ namespace Wakeya
             return string.Join(Environment.NewLine, lines);
         }
 
+        // 📋 結果をコピーする
         private void CopyResult()
         {
             if (lastGroups.Count == 0) return;

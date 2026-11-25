@@ -29,13 +29,16 @@ try {
   </div>
 </nav>
 
+<!-- 🧭 ヘッダー -->
 <header class="site-header" id="top">
   <p class="eyebrow">GROUP SPLITTER</p>
   <h1>わけや</h1>
   <p class="tagline">グループ分けツール</p>
 </header>
 
+<!-- 👥 グループ分け本体 -->
 <main>
+<!-- 👥 参加者入力 -->
   <section class="card">
     <h2>参加者（<span id="participantCount">0</span>人）</h2>
     <textarea id="participantsArea" rows="10" placeholder="1行に1人ずつ入力してください（貼り付け対応）&#10;例：&#10;田中&#10;佐藤&#10;鈴木"></textarea>
@@ -46,6 +49,7 @@ try {
     </div>
   </section>
 
+<!-- 🎲 分け方と結果 -->
   <section class="card split-card">
     <h2>分け方</h2>
     <div class="mode-controls" role="radiogroup" aria-label="分け方の指定方法">
@@ -81,6 +85,7 @@ try {
     <p id="copyMsg" class="note" aria-live="polite"></p>
   </section>
 
+<!-- 📝 くじやとの違い -->
   <section class="card">
     <h2>くじやとの違い</h2>
     <p>「くじや」は、参加者リストから<strong>当選者を選ぶ「抽選」</strong>向けのツールです。プレゼント企画の当選者決めのように、一部の人だけを選びたいときに使います。</p>
@@ -88,6 +93,7 @@ try {
   </section>
 </main>
 
+<!-- 🔗 フッター -->
 <footer class="site-footer">
   <p>わけや — 入力内容はブラウザ内でのみ処理されます</p>
 </footer>
